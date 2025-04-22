@@ -1,9 +1,12 @@
 'use client';
+
+import { supabase } from '@/lib/supabaseClient';
 import { useState } from 'react';
 
 export default function UploadPage() {
   const [image, setImage] = useState(null);
   const [comment, setComment] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -11,22 +14,61 @@ export default function UploadPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Upload logic here
-    const formData = new FormData();
-    formData.append('image', image);
-    formData.append('comment', comment);
+    if (!image) {
+      alert('Please select an image to upload.');
+      return;
+    }
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
+    setUploading(true);
+
+    // Get the currently logged-in user
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      alert('You must be signed in to upload.');
+      setUploading(false);
+      return;
+    }
+
+    // Create file path
+    const fileExt = image.name.split('.').pop();
+    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+
+    // Upload the file
+    const { error: uploadError } = await supabase.storage
+      .from('images') // your bucket name
+      .upload(filePath, image, {
+        contentType: image.type,
+      });
+
+    if (uploadError) {
+      alert('Failed to upload image: ' + uploadError.message);
+      setUploading(false);
+      return;
+    }
+
+    // Public image URL
+    const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${filePath}`;
+
+    // Insert post record
+    const { error: insertError } = await supabase.from('posts').insert({
+      user_id: user.id,
+      image_url: imageUrl,
+      caption: comment,
     });
 
-    if (res.ok) {
-      alert('Upload successful!');
+    if (insertError) {
+      alert('Failed to save post: ' + insertError.message);
     } else {
-      alert('Upload failed.');
+      alert('Upload successful!');
+      setImage(null);
+      setComment('');
     }
+
+    setUploading(false);
   };
 
   return (
@@ -47,9 +89,10 @@ export default function UploadPage() {
         />
         <button
           type="submit"
+          disabled={uploading}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded"
         >
-          Upload
+          {uploading ? 'Uploading...' : 'Upload'}
         </button>
       </form>
     </div>
