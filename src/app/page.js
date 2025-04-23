@@ -2,13 +2,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js"; // Import createClient
+import NavBar from '@/components/navbar';
 
 const Home = () => {
   const [session, setSession] = useState(null);  // To store the user session
   const [loading, setLoading] = useState(true);  // To handle the loading state
   const router = useRouter();
   
-  // Initialize the Supabase client (ensure you have these in your .env.local file)
+  // Initialize the Supabase client
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL; // Your Supabase URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Your Supabase anon key
   const supabase = createClient(supabaseUrl, supabaseAnonKey); // Use createClient to initialize the Supabase client
@@ -51,7 +52,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <NavBar />
       <header className="text-center py-8">
+        
         <h1 className="text-4xl font-bold text-blue-600">Images</h1>
       </header>
 
