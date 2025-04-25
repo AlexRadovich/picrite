@@ -17,16 +17,36 @@ export default function SignUp() {
       password,
       options: {
         data: {
-          display_name: displayName, // ✅ sent to user_metadata
+          display_name: displayName, // goes into user_metadata
         },
       },
     });
 
     if (error) {
       setMessage(`Error: ${error.message}`);
-    } else {
-      setMessage('Account created! Check your email to confirm your address.');
+      return;
     }
+
+    const user = data?.user;
+
+    // Sometimes `user` might be null (depending on email confirmation settings)
+    if (user?.id) {
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: user.id,              // 👈 this is critical for RLS
+            display_name: displayName,
+          },
+        ]);
+
+      if (insertError) {
+        setMessage(`Signup succeeded but failed to save profile: ${insertError.message}`);
+        return;
+      }
+    }
+
+    setMessage('Account created! Check your email to confirm your address.');
   };
 
   return (

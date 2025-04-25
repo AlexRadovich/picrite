@@ -1,34 +1,56 @@
-'use client'; // This makes the component run on the client (necessary for React hooks)
+'use client';
 
-import { useState } from 'react'; // React state hook
-import { supabase } from '@/lib/supabaseClient'; // Import your Supabase client instance
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
-  // Local state for user inputs and feedback messages
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const router = useRouter();
 
-  // This function handles form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload on form submit
+    e.preventDefault();
 
-    // Call Supabase's signInWithPassword method
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      // Show error message from Supabase
       setMessage(`Error: ${error.message}`);
     } else {
-      // Success — show a message or redirect the user
       setMessage('Successfully signed in!');
-      router.push("/");
-      // You could redirect with: router.push('/')
+
+      const user = data.user;
+
+      if (user) {
+        // Check if profile exists
+        const { data: existingProfile, error: fetchError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', user.id)
+          .single();
+
+        if (!existingProfile && !fetchError) {
+          // Insert profile
+          const { error: insertError } = await supabase.from('profiles').insert([
+            {
+              id: user.id,
+              display_name: user.user_metadata?.display_name || 'Anonymous',
+            },
+          ]);
+
+          if (insertError) {
+            console.error('Failed to create profile:', insertError.message);
+          } else {
+            console.log('Profile created successfully.');
+          }
+        }
+      }
+
+      router.push('/');
     }
   };
 
@@ -40,7 +62,6 @@ export default function SignIn() {
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Sign In</h2>
 
-        {/* Email input */}
         <input
           type="email"
           placeholder="Email"
@@ -50,7 +71,6 @@ export default function SignIn() {
           required
         />
 
-        {/* Password input */}
         <input
           type="password"
           placeholder="Password"
@@ -60,7 +80,6 @@ export default function SignIn() {
           required
         />
 
-        {/* Submit button */}
         <button
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded"
@@ -68,10 +87,8 @@ export default function SignIn() {
           Sign In
         </button>
 
-        {/* Display any success or error messages */}
         {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
 
-        {/* Optional: Link to the sign-up page */}
         <p className="mt-4 text-center text-sm">
           Don't have an account?{' '}
           <a href="/auth/signup" className="text-blue-600 hover:underline">

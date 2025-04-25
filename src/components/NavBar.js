@@ -9,17 +9,33 @@ import { supabase } from '@/lib/supabaseClient';
 const NavBar = () => {
   const pathname = usePathname();
   const [userId, setUserId] = useState(null);
+  const [displayName, setDisplayName] = useState('');
 
   useEffect(() => {
-    const getUser = async () => {
+    const fetchUserData = async () => {
       const {
         data: { user },
+        error: userError,
       } = await supabase.auth.getUser();
-      if (user) {
+
+      if (user && !userError) {
         setUserId(user.id);
+
+        const { data, error } = await supabase
+          .from('Users') // your custom user info table
+          .select('display_name')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          setDisplayName(data.display_name);
+        } else {
+          console.error('Failed to fetch display name:', error);
+        }
       }
     };
-    getUser();
+
+    fetchUserData();
   }, []);
 
   const linkClasses = (path) =>
@@ -31,7 +47,7 @@ const NavBar = () => {
     <header className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <nav className="flex space-x-6">
+          <nav className="flex items-center space-x-6">
             <Link href="/" className={linkClasses('/')}>
               <Home size={20} />
               <span className="hidden sm:inline">Home</span>
@@ -45,6 +61,11 @@ const NavBar = () => {
                 <User size={20} />
                 <span className="hidden sm:inline">My Profile</span>
               </Link>
+            )}
+            {displayName && (
+              <span className="text-gray-700 font-medium ml-2">
+                | {displayName}
+              </span>
             )}
           </nav>
         </div>
