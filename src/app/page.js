@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js"; // Import createClient
-import NavBar from '@/components/navbar';
+import NavBar from '@/components/NavBar';
 
 const Home = () => {
   const [session, setSession] = useState(null);  // To store the user session

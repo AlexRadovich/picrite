@@ -2,10 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Upload } from 'lucide-react';
+import { Home, Upload, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
 const NavBar = () => {
   const pathname = usePathname();
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    getUser();
+  }, []);
 
   const linkClasses = (path) =>
     `flex items-center space-x-1 ${
@@ -25,6 +40,12 @@ const NavBar = () => {
               <Upload size={20} />
               <span className="hidden sm:inline">Upload</span>
             </Link>
+            {userId && (
+              <Link href={`/profile/${userId}`} className={linkClasses(`/profile/${userId}`)}>
+                <User size={20} />
+                <span className="hidden sm:inline">My Profile</span>
+              </Link>
+            )}
           </nav>
         </div>
       </div>
