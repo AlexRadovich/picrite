@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient'; // Make sure this path matches your project
+import { supabase } from '@/lib/supabaseClient';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
@@ -14,6 +15,11 @@ export default function SignUp() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          display_name: displayName, // ✅ sent to user_metadata
+        },
+      },
     });
 
     if (error) {
@@ -30,6 +36,15 @@ export default function SignUp() {
         className="bg-white p-6 rounded shadow w-full max-w-md"
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+
+        <input
+          type="text"
+          placeholder="Display Name"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded mb-4"
+          required
+        />
 
         <input
           type="email"
