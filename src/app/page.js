@@ -1,18 +1,19 @@
-"use client"
+"use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js"; // Import createClient
+import { createClient } from "@supabase/supabase-js";
 import NavBar from '@/components/NavBar';
 
 const Home = () => {
-  const [session, setSession] = useState(null);  // To store the user session
-  const [loading, setLoading] = useState(true);  // To handle the loading state
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [images, setImages] = useState([]); // To store images from DB
   const router = useRouter();
-  
-  // Initialize the Supabase client
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL; // Your Supabase URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; // Your Supabase anon key
-  const supabase = createClient(supabaseUrl, supabaseAnonKey); // Use createClient to initialize the Supabase client
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -27,48 +28,62 @@ const Home = () => {
       if (data?.session) {
         setSession(data.session);
         console.log("User is signed in:", data.session.user);
-        console.log("Access token:", data.session.access_token);
       } else {
         console.log("User is not signed in");
-        router.push("/auth/signin"); // Redirect to the sign-in page if no session
+        router.push("/auth/signin");
       }
 
-      setLoading(false); // Once the session is checked, stop loading
+      setLoading(false);
     };
 
     checkSession();
   }, [router, supabase]);
 
-  if (loading) {
-    return <div>Loading...</div>; // Optional: display loading state while checking session
-  }
+  useEffect(() => {
+    const fetchImages = async () => {
+      const { data, error } = await supabase
+        .from('posts') // assuming your table is called 'posts'
+        .select('id, image_url, created_at')
+        .order('created_at', { ascending: false }); // Newest first
 
-  const sampleImages = [
-    "https://via.placeholder.com/1200x800/0000FF/808080?Text=Image+1",
-    "https://via.placeholder.com/1200x800/FF6347/FFFFFF?Text=Image+2",
-    "https://via.placeholder.com/1200x800/32CD32/FFFFFF?Text=Image+3",
-    "https://via.placeholder.com/1200x800/FFD700/FFFFFF?Text=Image+4",
-  ];
+      if (error) {
+        console.error('Error fetching images:', error);
+      } else {
+        setImages(data);
+      }
+    };
+
+    if (session) {
+      fetchImages();
+    }
+  }, [session, supabase]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <NavBar />
       <header className="text-center py-8">
-        
         <h1 className="text-4xl font-bold text-blue-600">Images</h1>
       </header>
 
       <section className="overflow-y-auto max-h-screen">
-        <div className="flex flex-col space-y-4 py-8">
-          {sampleImages.map((image, index) => (
-            <div key={index} className="flex-none w-full h-auto">
-              <img
-                src={image}
-                alt={`Image ${index + 1}`}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          ))}
+        <div className="flex flex-col space-y-4 py-8 px-4">
+          {images.length > 0 ? (
+            images.map((post) => (
+              <div key={post.id} className="flex-none w-full h-auto">
+                <img
+                  src={post.image_url}
+                  alt="Uploaded"
+                  className="w-full h-auto object-cover rounded-lg shadow"
+                />
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No images uploaded yet.</p>
+          )}
         </div>
       </section>
     </div>
