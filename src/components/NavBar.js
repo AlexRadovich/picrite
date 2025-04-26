@@ -22,7 +22,7 @@ const NavBar = () => {
         setUserId(user.id);
 
         const { data, error } = await supabase
-          .from('Users') // your custom user info table
+          .from('profiles') // ✅ use the correct table
           .select('display_name')
           .eq('id', user.id)
           .single();

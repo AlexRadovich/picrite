@@ -5,6 +5,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams } from 'next/navigation';
+import NavBar from '@/components/NavBar';
+
 
 export default function UserProfilePage() {
   const { uid } = useParams();
@@ -48,7 +50,11 @@ export default function UserProfilePage() {
   if (loading) return <p className="p-6">Loading profile...</p>;
 
   return (
+
     <div className="max-w-4xl mx-auto p-6">
+        <header>
+            <NavBar/>
+        </header>
       <h1 className="text-3xl font-bold mb-6">{displayName}'s Profile</h1>
 
       {posts.length === 0 ? (
