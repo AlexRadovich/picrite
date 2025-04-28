@@ -4,7 +4,6 @@ import { supabase } from '@/lib/supabaseClient';
 import { useState, useRef } from 'react';
 import NavBar from '@/components/NavBar';
 
-
 export default function UploadPage() {
   const [image, setImage] = useState(null);
   const [comment, setComment] = useState('');
@@ -24,6 +23,7 @@ export default function UploadPage() {
 
     setUploading(true);
 
+    // Get the logged-in user and their display name
     const {
       data: { user },
       error: userError,
@@ -36,9 +36,26 @@ export default function UploadPage() {
       return;
     }
 
+    // Fetch the display name for the logged-in user
+    const { data: userData, error: userDataError } = await supabase
+      .from('profiles')
+      .select('display_name')
+      .eq('id', user.id)
+      .single(); // Fetch a single record for the current user
+
+    if (userDataError || !userData) {
+      console.error('🔴 Error fetching user data:', userDataError);
+      alert('Error fetching your profile data.');
+      setUploading(false);
+      return;
+    }
+
+    const displayName = userData.display_name;
+
     const fileExt = image.name.split('.').pop();
     const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
+    // Upload the image to Supabase Storage
     const { error: uploadError } = await supabase.storage
       .from('images')
       .upload(filePath, image, {
@@ -52,17 +69,20 @@ export default function UploadPage() {
       return;
     }
 
+    // Get the public URL of the uploaded image
     const { data: publicUrlData } = supabase.storage
       .from('images')
       .getPublicUrl(filePath);
 
     const imageUrl = publicUrlData?.publicUrl;
 
+    // Insert post into the 'posts' table
     const { data: insertedData, error: insertError } = await supabase
       .from('posts')
       .insert([
         {
           user_id: user.id,
+          display_name: displayName, // Adding display name
           image_url: imageUrl,
           caption: comment,
         },
@@ -88,7 +108,7 @@ export default function UploadPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <header>
-        <NavBar/>
+        <NavBar />
       </header>
 
       {/* Upload Form */}

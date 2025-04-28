@@ -1,62 +1,55 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js"; 
 import NavBar from '@/components/NavBar';
 
 const Home = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [images, setImages] = useState([]); // To store images from DB
+  const [posts, setPosts] = useState([]);
   const router = useRouter();
-
+  
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
+    const checkSessionAndFetchPosts = async () => {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 
-      if (error) {
-        console.error("Error getting session:", error);
+      if (sessionError) {
+        console.error("Error getting session:", sessionError);
         setLoading(false);
         return;
       }
 
-      if (data?.session) {
-        setSession(data.session);
-        console.log("User is signed in:", data.session.user);
+      if (sessionData?.session) {
+        setSession(sessionData.session);
       } else {
-        console.log("User is not signed in");
         router.push("/auth/signin");
+        return;
+      }
+
+      // Fetch posts
+      const { data, error } = await supabase
+        .from('posts')
+        .select('id, image_url, created_at, display_name')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching images:', error);
+      } else {
+        console.log('Fetched posts:', data);
+        setPosts(data);
       }
 
       setLoading(false);
     };
 
-    checkSession();
+    checkSessionAndFetchPosts();
   }, [router, supabase]);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      const { data, error } = await supabase
-        .from('posts') // assuming your table is called 'posts'
-        .select('id, image_url, created_at')
-        .order('created_at', { ascending: false }); // Newest first
-
-      if (error) {
-        console.error('Error fetching images:', error);
-      } else {
-        setImages(data);
-      }
-    };
-
-    if (session) {
-      fetchImages();
-    }
-  }, [session, supabase]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -69,21 +62,20 @@ const Home = () => {
         <h1 className="text-4xl font-bold text-blue-600">Images</h1>
       </header>
 
-      <section className="overflow-y-auto max-h-screen">
-        <div className="flex flex-col space-y-4 py-8 px-4">
-          {images.length > 0 ? (
-            images.map((post) => (
-              <div key={post.id} className="flex-none w-full h-auto">
-                <img
-                  src={post.image_url}
-                  alt="Uploaded"
-                  className="w-full h-auto object-cover rounded-lg shadow"
-                />
+      <section className="overflow-y-auto max-h-screen px-4">
+        <div className="flex flex-col space-y-8 py-8">
+          {posts.map((post) => (
+            <div key={post.id} className="flex flex-col items-center bg-white p-4 rounded shadow-md">
+              <img
+                src={post.image_url}
+                alt="Uploaded"
+                className="w-full max-w-2xl rounded-md object-cover"
+              />
+              <div className="mt-4 text-gray-700 text-sm">
+                Posted by <span className="font-semibold">{post.display_name || 'Unknown'}</span> on {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">No images uploaded yet.</p>
-          )}
+            </div>
+          ))}
         </div>
       </section>
     </div>
