@@ -32,10 +32,10 @@ const Home = () => {
         return;
       }
 
-      // Fetch posts
+      // Fetch posts including captions
       const { data, error } = await supabase
         .from('posts')
-        .select('id, image_url, created_at, display_name')
+        .select('id, image_url, created_at, display_name, caption')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -74,6 +74,9 @@ const Home = () => {
               <div className="mt-4 text-gray-700 text-sm">
                 Posted by <span className="font-semibold">{post.display_name || 'Unknown'}</span> on {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
               </div>
+              {post.caption && (
+                <div className="mt-2 text-gray-600 italic">{post.caption}</div>
+              )}
             </div>
           ))}
         </div>
