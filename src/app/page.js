@@ -72,7 +72,7 @@ const Home = () => {
                 className="w-full max-w-2xl rounded-md object-cover"
               />
               <div className="mt-4 text-gray-700 text-sm">
-                Posted by <span className="font-semibold">{post.display_name || 'Unknown'}</span> on {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
+                By <span className="font-semibold">{post.display_name || 'Unknown'}</span> on {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
               </div>
               {post.caption && (
                 <div className="mt-2 text-gray-600 italic">{post.caption}</div>

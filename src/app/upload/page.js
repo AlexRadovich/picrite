@@ -112,12 +112,12 @@ export default function UploadPage() {
       </header>
 
       {/* Upload Form */}
-      <div className="flex justify-center items-center pt-10">
+      <div className="flex justify-center items-center  pt-10">
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded shadow w-full max-w-md"
+          className="bg-[#8a8a8a] p-6  rounded shadow w-full max-w-md"
         >
-          <h2 className="text-2xl font-bold mb-4 text-center">Upload Image</h2>
+          <h2 className="text-2xl font-bold mb-4  text-[#821019] text-center">Upload Image</h2>
 
           <input
             ref={fileInputRef}
@@ -139,13 +139,13 @@ export default function UploadPage() {
             placeholder="Add a comment"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-4"
+            className="w-full p-2 border text-[#2a2e49] border-gray-300 rounded mb-4"
           />
 
           <button
             type="submit"
             disabled={uploading}
-            className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded ${
+            className={`w-full bg-[#2a2e49] hover:bg-blue-600 text-white font-semibold py-2 rounded ${
               uploading ? 'opacity-60 cursor-not-allowed' : ''
             }`}
           >
