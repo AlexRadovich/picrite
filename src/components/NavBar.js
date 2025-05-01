@@ -44,9 +44,10 @@ const NavBar = () => {
     }`;
 
   return (
-    <header className="bg-white shadow">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header className="bg-white shadow w-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between w-full">
+          {/* Left side for navigation items */}
           <nav className="flex items-center space-x-6">
             <Link href="/" className={linkClasses('/')}>
               <Home size={20} />
@@ -68,6 +69,11 @@ const NavBar = () => {
               </span>
             )}
           </nav>
+
+          {/* Right side for "PicGate" */}
+          <div className="text-[#821019] text-2xl font-bold">
+            PicGate
+          </div>
         </div>
       </div>
     </header>
