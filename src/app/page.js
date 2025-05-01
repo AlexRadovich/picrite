@@ -61,12 +61,12 @@ const Home = () => {
       <NavBar />
       
       {/* Main content container for posts */}
-      <section className="overflow-y-auto max-h-screen w-full px-4 flex justify-center "> {/* Added mt-16 to push content down */}
+      <section className="overflow-y-auto max-h-screen w-full px-4 flex justify-center ">
         <div className="flex flex-col items-center space-y-8 py-8 w-full max-w-screen-lg">
           {posts.map((post) => (
             <div key={post.id} className="flex flex-col items-center bg-white p-4 rounded shadow-md w-full">
               {/* Image Container */}
-              <div className="relative w-full h-[80vh] flex justify-center items-center mb-4">
+              <div className="relative w-full h-[60vh] flex justify-center items-center mb-4">
                 <img
                   src={post.image_url}
                   alt="Uploaded"
@@ -76,10 +76,10 @@ const Home = () => {
 
               {/* Poster Info and Caption below the image */}
               <div className="mt-4 text-gray-700 text-sm">
-                Posted by <span className="font-semibold">{post.display_name || 'Unknown'}</span> on {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
+                By <span className="font-semibold">{post.display_name || 'Unknown'}</span> on {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
               </div>
               {post.caption && (
-                <div className="mt-2 text-gray-600 italic">{post.caption}</div>
+                <div className="mt-2 pb-10 text-gray-600 italic">{post.caption}</div>
               )}
             </div>
           ))}
