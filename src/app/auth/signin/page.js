@@ -64,7 +64,7 @@ export default function SignIn() {
     className="z-10 bg-[#f5f5f4] p-8 rounded-2xl shadow-lg w-full max-w-md border border-[#821019]/30 backdrop-blur"
   >
     <h2 className="text-3xl font-bold text-center text-[#1e2b45] mb-6">
-      Sign In to Photoframe
+      Sign In to PicGate
     </h2>
 
     <input
