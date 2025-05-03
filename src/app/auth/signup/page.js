@@ -35,7 +35,7 @@ export default function SignUp() {
         .from('profiles')
         .insert([
           {
-            id: user.id,              // 👈 this is critical for RLS
+            id: user.id,             
             display_name: displayName,
           },
         ]);
@@ -51,6 +51,8 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
+        <div className="absolute inset-0 bg-[url('/bokeh.jpg')] bg-cover bg-center opacity-10 blur-sm z-0" />
+
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded shadow w-full max-w-md"
