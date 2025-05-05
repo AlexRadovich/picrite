@@ -106,7 +106,7 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[#B0C4DE]">
       <header>
         <NavBar />
       </header>
@@ -115,7 +115,7 @@ export default function UploadPage() {
       <div className="flex justify-center items-center  pt-10">
         <form
           onSubmit={handleSubmit}
-          className="bg-[#8a8a8a] p-6  rounded shadow w-full max-w-md"
+          className="bg-gray-100 p-6  text-[#909090] rounded shadow w-full max-w-md"
         >
           <h2 className="text-2xl font-bold mb-4  text-[#821019] text-center">Upload Image</h2>
 

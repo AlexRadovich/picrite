@@ -6,7 +6,6 @@ import { createClient } from "@supabase/supabase-js";
 import NavBar from '@/components/NavBar';
 import LikeButton from '@/components/LikeButton';
 
-
 const Home = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +57,7 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start">
+    <div className="min-h-screen bg-[#B0C4DE] flex flex-col items-center justify-start">
       {/* Navbar that spans across the top of the screen */}
       <NavBar />
       
@@ -66,7 +65,7 @@ const Home = () => {
       <section className="overflow-y-auto max-h-screen w-full px-4 flex justify-center ">
         <div className="flex flex-col items-center space-y-8 py-8 w-full max-w-screen-lg">
           {posts.map((post) => (
-            <div key={post.id} className="flex flex-col items-center bg-white p-4 rounded shadow-md w-full">
+            <div key={post.id} className="flex flex-col items-center bg-white p-4 rounded shadow-md w-full relative">
               {/* Image Container */}
               <div className="relative w-full h-[60vh] flex justify-center items-center mb-4">
                 <img
@@ -83,7 +82,9 @@ const Home = () => {
               {post.caption && (
                 <div className="mt-2 pb-10 text-gray-600 italic">{post.caption}</div>
               )}
-              <div className="mt-4 self-start">
+              
+              {/* Like Button positioned at the bottom right corner */}
+              <div className="absolute bottom-4 right-4">
                 <LikeButton postId={post.id} />
               </div>
             </div>
