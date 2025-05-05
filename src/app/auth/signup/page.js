@@ -17,7 +17,7 @@ export default function SignUp() {
       password,
       options: {
         data: {
-          display_name: displayName, // goes into user_metadata
+          display_name: displayName,
         },
       },
     });
@@ -29,13 +29,12 @@ export default function SignUp() {
 
     const user = data?.user;
 
-    // Sometimes `user` might be null (depending on email confirmation settings)
     if (user?.id) {
       const { error: insertError } = await supabase
         .from('profiles')
         .insert([
           {
-            id: user.id,             
+            id: user.id,
             display_name: displayName,
           },
         ]);
@@ -50,21 +49,23 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-        <div className="absolute inset-0 bg-[url('/bokeh.jpg')] bg-cover bg-center opacity-10 blur-sm z-0" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1e2b45] to-[#2a395e] relative">
+      <div className="absolute inset-0 bg-[url('/bokeh.jpg')] bg-cover bg-center opacity-10 blur-sm z-0" />
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-full max-w-md"
+        className="z-10 bg-[#f5f5f4] p-8 rounded-2xl shadow-lg w-full max-w-md border border-[#821019]/30 backdrop-blur"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+        <h2 className="text-3xl font-bold text-center text-[#1e2b45] mb-6">
+          Sign Up for PicGate
+        </h2>
 
         <input
           type="text"
           placeholder="Display Name"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
+          className="w-full p-3 border border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
           required
         />
 
@@ -73,7 +74,7 @@ export default function SignUp() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
+          className="w-full p-3 border border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
           required
         />
 
@@ -82,22 +83,22 @@ export default function SignUp() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
+          className="w-full p-3 border border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
           required
         />
 
         <button
           type="submit"
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded"
+          className="w-full bg-[#821019] hover:bg-[#6c0f16] text-white font-semibold py-2 rounded transition"
         >
           Sign Up
         </button>
 
         {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
 
-        <p className="mt-4 text-center text-sm">
+        <p className="mt-4 text-center text-sm text-[#1e2b45]">
           Already have an account?{' '}
-          <a href="/auth/signin" className="text-blue-600 hover:underline">
+          <a href="/auth/signin" className="text-[#821019] hover:underline">
             Sign in
           </a>
         </p>

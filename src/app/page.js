@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js"; 
 import NavBar from '@/components/NavBar';
+import LikeButton from '@/components/LikeButton';
+
 
 const Home = () => {
   const [session, setSession] = useState(null);
@@ -81,6 +83,9 @@ const Home = () => {
               {post.caption && (
                 <div className="mt-2 pb-10 text-gray-600 italic">{post.caption}</div>
               )}
+              <div className="mt-4 self-start">
+                <LikeButton postId={post.id} />
+              </div>
             </div>
           ))}
         </div>
