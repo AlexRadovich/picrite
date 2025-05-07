@@ -63,7 +63,7 @@ export default function UserProfilePage() {
         <h1 className="text-4xl font-bold text-[#821019] mb-6 text-center">{displayName}'s Profile</h1>
 
         {posts.length === 0 ? (
-          <p className="text-center text-lg text-gray-600">This user hasn't posted anything yet.</p>
+          <p className="text-center text-lg text-gray-600">You haven't posted anything yet...</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {posts.map((post) => (
