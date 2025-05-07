@@ -63,7 +63,7 @@ export default function SignIn() {
     onSubmit={handleSubmit}
     className="z-10 bg-[#f5f5f4] p-8 rounded-2xl shadow-lg w-full max-w-md border border-[#821019]/30 backdrop-blur"
   >
-    <h2 className="text-3xl font-bold text-center text-[#1e2b45] mb-6">
+    <h2 className="text-3xl font-bold text-center text-[#821019] mb-6">
       Sign In to PicGate
     </h2>
 
@@ -72,7 +72,7 @@ export default function SignIn() {
       placeholder="Email"
       value={email}
       onChange={(e) => setEmail(e.target.value)}
-      className="w-full p-3 border border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
+      className="w-full p-3 border text-[#303030] border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
       required
     />
 
@@ -81,7 +81,7 @@ export default function SignIn() {
       placeholder="Password"
       value={password}
       onChange={(e) => setPassword(e.target.value)}
-      className="w-full p-3 border border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
+      className="w-full p-3 border text-[#303030] border-[#1e2b45]/30 rounded mb-4 focus:ring-2 focus:ring-[#821019] outline-none"
       required
     />
 
