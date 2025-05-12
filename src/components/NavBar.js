@@ -65,7 +65,7 @@ const NavBar = () => {
             )}
             {displayName && (
               <span className="text-gray-700 font-medium ml-2">
-                |    Logged in as: {displayName}
+                |   {displayName}
               </span>
             )}
           </nav>
