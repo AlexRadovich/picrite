@@ -117,7 +117,7 @@ export default function UploadPage() {
           onSubmit={handleSubmit}
           className="bg-gray-100 p-6  text-[#908090] rounded shadow w-full max-w-md"
         >
-          <h2 className="text-2xl font-bold mb-4  text-[#821019] text-center">Upload Image</h2>
+          <h2 className="text-2xl font-bold mb-4  text-[#821019] text-center">Upload an Image</h2>
 
           <input
             ref={fileInputRef}
